@@ -1,6 +1,6 @@
 <?php
 
-namespace Clickbus\ExactTarget;
+namespace Clickbus\ExactTarget\Core;
 
 use Exception;
 use DateInterval;
