@@ -1,16 +1,30 @@
 <?php
+
+namespace Clickbus\ExactTarget;
+
+use Exception;
+use DateInterval;
+use DateTime;
+use JWT;
+use DOMDocument;
+use WSSESoap;
+use SoapVar;
+use stdClass;
+
 require('soap-wsse.php');
 require('JWT.php');
 
-class ET_Client extends SoapClient {
+class ET_Client extends \SoapClient {
 	public $packageName, $packageFolders, $parentFolders;
 	private $wsdlLoc, $debugSOAP, $lastHTTPCode, $clientId, 
 			$clientSecret, $appsignature, $endpoint, 
-			$tenantTokens, $tenantKey;
+			$tenantTokens, $tenantKey, $wsdlFile;
 		
 	function __construct($getWSDL = false, $debug = false, $params = null) {	
 		$tenantTokens = array();
 		$config = false;
+
+        $this->wsdlFile = realpath(__DIR__ . DIRECTORY_SEPARATOR . 'ExactTargetWSDL.xml');
 
 		if (file_exists(realpath(__DIR__ . "/config.php")))
 			$config = include 'config.php';
@@ -61,14 +75,15 @@ class ET_Client extends SoapClient {
 			}
 			} catch (Exception $e) {
 			throw new Exception('Unable to determine stack using /platform/v1/endpoints/: '.$e->getMessage());
-		} 		
-		parent::__construct('ExactTargetWSDL.xml', array('trace'=>1, 'exceptions'=>0));
+		}
+
+		parent::__construct($this->wsdlFile, array('trace'=>1, 'exceptions'=>0));
 		parent::__setLocation($this->endpoint);
 	}
 	
 	function refreshToken($forceRefresh = false) {
 		if (property_exists($this, "sdl") && $this->sdl == 0){
-			parent::__construct('ExactTargetWSDL.xml', array('trace'=>1, 'exceptions'=>0));	
+			parent::__construct($this->wsdlFile, array('trace'=>1, 'exceptions'=>0));
 		}
 		try {
 			$currentTime = new DateTime();
@@ -123,8 +138,8 @@ class ET_Client extends SoapClient {
 			
 			$remoteTS = $this->GetLastModifiedDate($wsdlLoc);
 			
-			if (file_exists("ExactTargetWSDL.xml")){
-				$localTS = filemtime("ExactTargetWSDL.xml");
+			if (file_exists($this->wsdlFile)){
+				$localTS = filemtime($this->wsdlFile);
 				if ($remoteTS <= $localTS) 
 				{
 					$getNewWSDL = false;
@@ -133,7 +148,7 @@ class ET_Client extends SoapClient {
 			
 			if ($getNewWSDL){
 				$newWSDL = file_gET_contents($wsdlLoc);
-				file_put_contents("ExactTargetWSDL.xml", $newWSDL);
+				file_put_contents($this->wsdlFile, $newWSDL);
 			}	
 		}
 		catch (Exception $e) {
