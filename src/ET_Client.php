@@ -1,6 +1,6 @@
 <?php
 
-namespace ExactTarget\Core;
+namespace ExactTarget;
 
 use Exception;
 use DateInterval;
