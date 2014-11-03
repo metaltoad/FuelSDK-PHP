@@ -1,5 +1,17 @@
 {
-    "name": "FuelSDK-PHP",
+    "name": "leowebx/fuelsdk-php",
     "description": "SDK to integrate the Exact Target API",
-    "license": "MIT"
+    "license": "MIT",
+    "minimum-stability": "stable",
+    "authors": [
+        {
+            "name": "Michael Clark",
+            "email": ""
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "": "src/"
+        }
+    }
 }
