@@ -1,0 +1,5 @@
+{
+    "name": "FuelSDK-PHP",
+    "description": "SDK to integrate the Exact Target API",
+    "license": "MIT"
+}
