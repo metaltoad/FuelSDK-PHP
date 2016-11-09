@@ -25,7 +25,7 @@ class ET_Client extends \SoapClient {
 		$config = false;
 
 		if (file_exists(realpath(__DIR__ . "/config.php")))
-			$config = include 'config.php';
+			$$config = include realpath(__DIR__ . "/config.php");
 
 		if ($config){
 			$this->wsdlLoc = $config['defaultwsdl'];
